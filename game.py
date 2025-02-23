@@ -21,7 +21,7 @@ player_speed = 5
 # bulets
 bullet_width, bullet_height = 5, 10
 bullets = []
-bullet_fired = False  # Для контролю, щоб пуля не летіла стрімко
+bullet_fired = False 
 
 # Вороги
 enemy_width, enemy_height = 50, 50
@@ -47,20 +47,18 @@ def move_bullets():
         if bullet.y < 0:
             bullets.remove(bullet)
     
-    # Дозволяємо стріляти тільки після того, як пуля вийде з екрану
     bullet_fired = False
 
 def move_enemies():
     global enemies
     for enemy in enemies:
         enemy["rect"].y += enemy["speed"]
-        enemy["rect"].x += enemy["direction"] * 3  # Зигзагообразний рух
+        enemy["rect"].x += enemy["direction"] * 3  # рух зигзагами
 
         # Перевірка меж екрану для ворога
         if enemy["rect"].x <= 0 or enemy["rect"].x >= WIDTH - enemy_width:
             enemy["direction"] *= -1  # Змінюємо напрямок, коли ворог досягає межі
 
-        # Якщо ворог досягає низу екрану, видаляємо його
         if enemy["rect"].y > HEIGHT:
             enemies.remove(enemy)
 
@@ -85,9 +83,9 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and not bullet_fired:
             bullets.append(pygame.Rect(player_x + player_width // 2 - bullet_width // 2, player_y, bullet_width, bullet_height))
-            bullet_fired = True  # Встановлюємо, що пуля була випущена
+            bullet_fired = True  #пуля була випущена
 
-    # Управління гравцем
+    # Управління
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and player_x > 0:
         player_x -= player_speed
@@ -98,25 +96,19 @@ while running:
     if random.randint(1, 50) == 1:
         create_enemy()
 
-    # Рух куль і ворогів
     move_bullets()
     move_enemies()
-    
-    # Перевірка на зіткнення
     check_collisions()
 
-    # Малюємо гравця
     pygame.draw.rect(screen, WHITE, pygame.Rect(player_x, player_y, player_width, player_height))
 
-    # Малюємо кулі
     for bullet in bullets:
         pygame.draw.rect(screen, WHITE, bullet)
 
-    # Малюємо ворогів
     for enemy in enemies:
         pygame.draw.rect(screen, RED, enemy["rect"])
 
-    # Виводимо лічильник вбитих ворогів
+    #лічильник вбитих ворогів
     font = pygame.font.SysFont(None, 36)
     text = font.render(f"Вбиті вороги: {kill_count}", True, WHITE)
     screen.blit(text, (10, 10))
